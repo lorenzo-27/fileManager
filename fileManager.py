@@ -12,7 +12,17 @@ def extractFiles(srcFolder, targetFolder, extensions, mvOrCp):
 
     for root, dirs, files in os.walk(srcFolder):
         for file in files:
-            if file.endswith(tuple(extensions)):
+            if extensions:
+                if file.endswith(tuple(extensions)):
+                    sourcePath = os.path.join(root, file)
+                    destinationPath = os.path.join(targetFolder, file)
+
+                    if os.path.abspath(sourcePath) != os.path.abspath(destinationPath):
+                        if mvOrCp == "s":
+                            shutil.move(sourcePath, targetFolder)
+                        elif mvOrCp == "c":
+                            shutil.copy2(sourcePath, targetFolder)
+            else:
                 sourcePath = os.path.join(root, file)
                 destinationPath = os.path.join(targetFolder, file)
 
@@ -86,7 +96,7 @@ if __name__ == '__main__':
     if operation == "1":
         extractFiles(src, os.path.join(os.path.expanduser("~"), src, "__pdf"), [".pdf"], mvOrCp)
     elif operation == "2":
-        extractFiles(src, os.path.join(os.path.expanduser("~"), src, "__files"), [], mvOrCp)
+        extractFiles(src, os.path.join(os.path.expanduser("~"), src, "__files"), [""], mvOrCp)
     elif operation == "3":
         extractFiles(src, os.path.join(os.path.expanduser("~"), src, "__jpg"), [".JPG"], mvOrCp)
         extractFiles(src, os.path.join(os.path.expanduser("~"), src, "__raw"), [".ARW", ".NEF", ".DNG"], mvOrCp)
@@ -99,3 +109,5 @@ if __name__ == '__main__':
             folderCreator(src, nFolders)
     elif operation == "6":
         fileOrganizer(src)
+
+    print("Operazione completata con successo!")
